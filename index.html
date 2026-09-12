@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitLab · Conversor de bases y tablas de verdad</title>
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-mark" width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect x="1" y="1" width="26" height="26" rx="6" stroke="#5EEAD4" stroke-width="2"/>
+      <rect x="6" y="9" width="6" height="6" fill="#5EEAD4"/>
+      <rect x="16" y="9" width="6" height="6" stroke="#E8B34A" stroke-width="2"/>
+      <circle cx="6.5" cy="20.5" r="1.6" fill="#5EEAD4"/>
+      <circle cx="11.5" cy="20.5" r="1.6" fill="#2A3733"/>
+      <circle cx="16.5" cy="20.5" r="1.6" fill="#5EEAD4"/>
+      <circle cx="21.5" cy="20.5" r="1.6" fill="#5EEAD4"/>
+    </svg>
+    <span class="brand-name">Bit<span>Lab</span></span>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button class="tab active" data-tab="conversor" role="tab" aria-selected="true">Conversor de bases</button>
+    <button class="tab" data-tab="verdad" role="tab" aria-selected="false">Tabla de verdad</button>
+    <button class="tab" data-tab="acerca" role="tab" aria-selected="false">Acerca</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== CONVERSOR ===================== -->
+  <section id="panel-conversor" class="panel active">
+    <div class="panel-head">
+      <h1>Conversor de bases numéricas</h1>
+      <p>Elegí el tipo de conversión, ingresá el valor y mirá el proceso completo, paso a paso.</p>
+    </div>
+
+    <div class="mode-chips" id="mode-chips">
+      <button class="chip active" data-mode="bin2dec">Binario → Decimal</button>
+      <button class="chip" data-mode="dec2bin">Decimal → Binario</button>
+      <button class="chip" data-mode="dec2hex">Decimal → Hexadecimal</button>
+      <button class="chip" data-mode="hex2dec">Hexadecimal → Decimal</button>
+      <button class="chip" data-mode="dec2oct">Decimal → Octal</button>
+      <button class="chip" data-mode="oct2dec">Octal → Decimal</button>
+      <button class="chip" data-mode="bin2hex">Binario → Hexadecimal</button>
+      <button class="chip" data-mode="hex2bin">Hexadecimal → Binario</button>
+      <button class="chip" data-mode="bin2oct">Binario → Octal</button>
+      <button class="chip" data-mode="oct2bin">Octal → Binario</button>
+    </div>
+
+    <form id="conv-form" class="conv-form">
+      <label for="conv-input" id="conv-label">Valor en binario</label>
+      <div class="input-row">
+        <input id="conv-input" type="text" inputmode="text" placeholder="Ej: 101101" autocomplete="off">
+        <button type="submit" class="btn-primary">Convertir</button>
+      </div>
+      <p class="error" id="conv-error" aria-live="polite"></p>
+    </form>
+
+    <div id="conv-result" class="conv-result" hidden>
+      <div class="result-banner">
+        <span class="result-label" id="result-label">Resultado</span>
+        <span class="result-value" id="result-value"></span>
+      </div>
+      <div id="conv-process" class="conv-process"></div>
+    </div>
+  </section>
+
+  <!-- ===================== TABLA DE VERDAD ===================== -->
+  <section id="panel-verdad" class="panel">
+    <div class="panel-head">
+      <h1>Tabla de verdad</h1>
+      <p>Escribí una expresión lógica y generá su tabla de verdad completa, con cada subexpresión resuelta en orden.</p>
+    </div>
+
+    <form id="tt-form" class="conv-form">
+      <label for="tt-input">Expresión lógica</label>
+      <div class="input-row">
+        <input id="tt-input" type="text" placeholder="Ej: (A AND B) OR NOT C" autocomplete="off">
+        <button type="submit" class="btn-primary">Resolver</button>
+      </div>
+      <p class="hint">
+        Operadores admitidos — NOT: <code>! ¬ ~ NOT</code> · AND: <code>& ∧ * AND</code> · OR: <code>| ∨ + OR</code> ·
+        XOR: <code>^ XOR</code> · Implica: <code>-&gt; IMPLICA</code> · Doble implicación: <code>&lt;-&gt; SII</code>.
+        Variables: cualquier letra mayúscula.
+      </p>
+      <p class="error" id="tt-error" aria-live="polite"></p>
+    </form>
+
+    <div id="tt-result" class="tt-result" hidden>
+      <div id="tt-steps" class="tt-steps"></div>
+      <div class="table-wrap">
+        <table id="tt-table"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ACERCA ===================== -->
+  <section id="panel-acerca" class="panel">
+    <div class="panel-head">
+      <h1>Sobre BitLab</h1>
+      <p>Una caja de herramientas pensada para materias de sistemas digitales y arquitectura de computadoras.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <h2>Qué resuelve hoy</h2>
+        <ul>
+          <li>Conversiones entre binario, decimal, hexadecimal y octal.</li>
+          <li>Divisiones sucesivas mostradas en escalerita, tal como se resuelven a mano.</li>
+          <li>Tablas de verdad con cada subexpresión desglosada por columna.</li>
+        </ul>
+      </div>
+      <div class="about-card">
+        <h2>Pensada para crecer</h2>
+        <p>El código está separado por módulos (conversiones, lógica proposicional e interfaz), así que sumar
+        una nueva herramienta —complemento a dos, mapas de Karnaugh, código Gray, IEEE 754— es agregar un
+        módulo nuevo sin tocar el resto.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <span>BitLab</span>
+  <span class="dot">·</span>
+  <span>Hecho por Carlxoso</span>
+</footer>
+
+<script src="converters.js"></script>
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
