@@ -2,7 +2,7 @@
 
 **BitLab** es un sitio web desarrollado como un espacio de herramientas y utilidades digitales. El proyecto reúne diferentes funciones en una interfaz sencilla, buscando ofrecer una experiencia práctica, rápida y fácil de utilizar.
 
-## 🛠️ Tecnologías utilizadas
+## Tecnologías utilizadas
 
 El proyecto fue desarrollado utilizando tecnologías web fundamentales:
 
@@ -12,7 +12,7 @@ El proyecto fue desarrollado utilizando tecnologías web fundamentales:
 * **Vercel** — Despliegue y publicación del sitio web.
 * **Git & GitHub** — Control de versiones y almacenamiento del código fuente.
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```text
 BitLab/
@@ -27,7 +27,7 @@ BitLab/
 └── README.md        # Documentación del proyecto
 ```
 
-## 🚀 Características
+## Características
 
 BitLab está diseñado para integrar diferentes herramientas web en un mismo sitio, utilizando JavaScript para procesar las operaciones y proporcionar resultados de forma dinámica.
 
@@ -39,7 +39,7 @@ El proyecto busca:
 * Utilizar una estructura organizada y modular.
 * Ser accesible desde cualquier dispositivo con un navegador web.
 
-## 🌐 Publicación
+## Publicación
 
 El proyecto está preparado para ser desplegado mediante **Vercel**, utilizando el archivo `vercel.json` para su configuración.
 
@@ -53,13 +53,13 @@ La estructura principal se divide en:
 * **CSS** para la interfaz y estilos.
 * **JavaScript** para la lógica y funcionalidades.
 
-## 📌 Estado del proyecto
+## Estado del proyecto
 
 **En desarrollo.**
 
 BitLab puede continuar incorporando nuevas herramientas, mejoras visuales y funcionalidades conforme avance el desarrollo del proyecto.
 
-## 👨‍💻 Autor
+## Autor
 
 **Carlxoso**
 
