@@ -17,6 +17,8 @@
 
 *{ box-sizing: border-box; }
 
+[hidden]{ display: none !important; }
+
 html{ scroll-behavior: smooth; }
 
 body{
@@ -99,7 +101,7 @@ main{ flex:1; max-width: 920px; width:100%; margin: 0 auto; padding: 40px 24px 8
 .conv-form{ margin-bottom: 12px; }
 .conv-form label{ display:block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
 .input-row{ display:flex; gap:10px; }
-#conv-input, #tt-input{
+#conv-input, #tt-input, #arith-a, #arith-b, #comp-a, #comp-b{
   flex:1;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -111,7 +113,7 @@ main{ flex:1; max-width: 920px; width:100%; margin: 0 auto; padding: 40px 24px 8
   letter-spacing: 0.03em;
   transition: border-color .15s ease;
 }
-#conv-input:focus, #tt-input:focus{ border-color: var(--accent); outline:none; }
+#conv-input:focus, #tt-input:focus, #arith-a:focus, #arith-b:focus, #comp-a:focus, #comp-b:focus{ border-color: var(--accent); outline:none; }
 
 .btn-primary{
   font-family: var(--display);
