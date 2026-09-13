@@ -1,6 +1,3 @@
-# BitLab
-Sitio web educativo para realizar conversiones binarias y generar tablas de verdad de forma sencilla e interactiva.
-
 **BitLab** es un sitio web desarrollado como un espacio de herramientas y utilidades digitales. El proyecto reúne diferentes funciones en una interfaz sencilla, buscando ofrecer una experiencia práctica, rápida y fácil de utilizar.
 
 ## 🛠️ Tecnologías utilizadas
