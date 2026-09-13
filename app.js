@@ -60,6 +60,89 @@ document.getElementById("conv-form").addEventListener("submit", (e) => {
 
 applyMode(currentMode);
 
+/* ---------- Aritmética binaria ---------- */
+let currentArithMode = "suma";
+const arithChips = document.querySelectorAll("#arith-chips .chip");
+const arithA = document.getElementById("arith-a");
+const arithB = document.getElementById("arith-b");
+const arithOp = document.getElementById("arith-op");
+const arithError = document.getElementById("arith-error");
+const arithResult = document.getElementById("arith-result");
+const arithResultLabel = document.getElementById("arith-result-label");
+const arithResultValue = document.getElementById("arith-result-value");
+const arithProcess = document.getElementById("arith-process");
+
+function applyArithMode(mode) {
+  currentArithMode = mode;
+  arithChips.forEach(c => c.classList.toggle("active", c.dataset.mode === mode));
+  arithOp.textContent = ARITHMETIC_MODES[mode].op;
+  arithError.textContent = "";
+  arithResult.hidden = true;
+}
+arithChips.forEach(chip => chip.addEventListener("click", () => applyArithMode(chip.dataset.mode)));
+
+document.getElementById("arith-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  arithError.textContent = "";
+  const cfg = ARITHMETIC_MODES[currentArithMode];
+  try {
+    const { value, html } = cfg.run(arithA.value.trim(), arithB.value.trim());
+    arithResultLabel.textContent = `Resultado de la ${cfg.label.toLowerCase()}`;
+    arithResultValue.textContent = value;
+    arithProcess.innerHTML = html;
+    arithResult.hidden = false;
+  } catch (err) {
+    arithResult.hidden = true;
+    arithError.textContent = err.message;
+  }
+});
+applyArithMode(currentArithMode);
+
+/* ---------- Complementos ---------- */
+let currentCompMode = "c1";
+const compChips = document.querySelectorAll("#comp-chips .chip");
+const compA = document.getElementById("comp-a");
+const compB = document.getElementById("comp-b");
+const compOp = document.getElementById("comp-op");
+const compLabelA = document.getElementById("comp-label-a");
+const compError = document.getElementById("comp-error");
+const compResult = document.getElementById("comp-result");
+const compResultLabel = document.getElementById("comp-result-label");
+const compResultValue = document.getElementById("comp-result-value");
+const compProcess = document.getElementById("comp-process");
+
+function applyCompMode(mode) {
+  currentCompMode = mode;
+  compChips.forEach(c => c.classList.toggle("active", c.dataset.mode === mode));
+  const cfg = COMPLEMENT_MODES[mode];
+  const twoInputs = cfg.inputs === 2;
+  compB.hidden = !twoInputs;
+  compOp.hidden = !twoInputs;
+  compLabelA.textContent = twoInputs ? "Número A (minuendo, binario)" : "Número (binario)";
+  compB.placeholder = "Número B (sustraendo, binario) — ej: 0110";
+  compError.textContent = "";
+  compResult.hidden = true;
+}
+compChips.forEach(chip => chip.addEventListener("click", () => applyCompMode(chip.dataset.mode)));
+
+document.getElementById("comp-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  compError.textContent = "";
+  const cfg = COMPLEMENT_MODES[currentCompMode];
+  try {
+    const args = cfg.inputs === 2 ? [compA.value.trim(), compB.value.trim()] : [compA.value.trim()];
+    const { value, html } = cfg.run(...args);
+    compResultLabel.textContent = cfg.resultLabel;
+    compResultValue.textContent = value;
+    compProcess.innerHTML = html;
+    compResult.hidden = false;
+  } catch (err) {
+    compResult.hidden = true;
+    compError.textContent = err.message;
+  }
+});
+applyCompMode(currentCompMode);
+
 /* ---------- Tabla de verdad ---------- */
 const ttForm = document.getElementById("tt-form");
 const ttInput = document.getElementById("tt-input");
