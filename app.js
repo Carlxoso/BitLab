@@ -4,6 +4,21 @@
    de converters.js y logic.js.
    ============================================================ */
 
+/* ---------- Pantalla de carga ---------- */
+(function () {
+  const loader = document.getElementById("loading-screen");
+  if (!loader) return;
+  const minDuration = 700; // ms mínimos para que se note la animación
+  const start = performance.now();
+  function hideLoader() {
+    const elapsed = performance.now() - start;
+    const wait = Math.max(0, minDuration - elapsed);
+    setTimeout(() => loader.classList.add("hide"), wait);
+  }
+  if (document.readyState === "complete") hideLoader();
+  else window.addEventListener("load", hideLoader);
+})();
+
 /* ---------- Tabs ---------- */
 const tabs = document.querySelectorAll(".tab");
 const panels = document.querySelectorAll(".panel");
@@ -58,6 +73,13 @@ document.getElementById("conv-form").addEventListener("submit", (e) => {
   }
 });
 
+document.getElementById("conv-clear").addEventListener("click", () => {
+  convInput.value = "";
+  convError.textContent = "";
+  convResult.hidden = true;
+  convInput.focus();
+});
+
 applyMode(currentMode);
 
 /* ---------- Aritmética binaria ---------- */
@@ -96,6 +118,14 @@ document.getElementById("arith-form").addEventListener("submit", (e) => {
     arithError.textContent = err.message;
   }
 });
+document.getElementById("arith-clear").addEventListener("click", () => {
+  arithA.value = "";
+  arithB.value = "";
+  arithError.textContent = "";
+  arithResult.hidden = true;
+  arithA.focus();
+});
+
 applyArithMode(currentArithMode);
 
 /* ---------- Complementos ---------- */
@@ -141,6 +171,14 @@ document.getElementById("comp-form").addEventListener("submit", (e) => {
     compError.textContent = err.message;
   }
 });
+document.getElementById("comp-clear").addEventListener("click", () => {
+  compA.value = "";
+  compB.value = "";
+  compError.textContent = "";
+  compResult.hidden = true;
+  compA.focus();
+});
+
 applyCompMode(currentCompMode);
 
 /* ---------- Tabla de verdad ---------- */
@@ -162,6 +200,13 @@ ttForm.addEventListener("submit", (e) => {
     ttResult.hidden = true;
     ttError.textContent = err.message;
   }
+});
+
+document.getElementById("tt-clear").addEventListener("click", () => {
+  ttInput.value = "";
+  ttError.textContent = "";
+  ttResult.hidden = true;
+  ttInput.focus();
 });
 
 function renderTruthTable(result) {
