@@ -207,7 +207,7 @@ main{ flex:1; max-width: 920px; width:100%; margin: 0 auto; padding: 40px 24px 8
   width: 20px; flex-shrink:0;
 }
 
-.arith-block{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.arith-block{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 22px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .op-grid{ display:inline-grid; row-gap: 4px; font-family: var(--mono); font-size: 1.15rem; margin-bottom: 18px; }
 .op-row{ display:contents; }
 .op-label{ display:flex; align-items:center; justify-content:flex-end; padding-right: 10px; color: var(--muted); font-size: 0.85rem; }
