@@ -220,6 +220,7 @@ main{ flex:1; max-width: 920px; width:100%; margin: 0 auto; padding: 40px 24px 8
 .arith-steps{ margin: 0; padding-left: 20px; color: var(--muted); font-size: 0.88rem; display:flex; flex-direction:column; gap: 6px; }
 .arith-steps li b{ color: var(--text); }
 .arith-steps li::marker{ color: var(--accent); }
+.arith-subtitle{ font-size: 0.95rem; color: var(--accent); margin: 22px 0 10px; font-weight: 600; }
 
 /* ---------- TRUTH TABLE ---------- */
 .tt-result{ margin-top: 8px; }

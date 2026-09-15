@@ -138,6 +138,55 @@ function subtractWithComplement(aRaw, bRaw, mode) {
   return { value: finalValue, html };
 }
 
+/* ================= COMPARAR LOS 3 MÉTODOS ================= */
+function signedBinaryValue(binStr) {
+  if (binStr.startsWith("-")) return -parseInt(binStr.slice(1), 2);
+  return parseInt(binStr, 2);
+}
+
+function compareSubtractionMethods(aRaw, bRaw) {
+  const a0 = requireBinary(aRaw, "El primer número (minuendo)");
+  const b0 = requireBinary(bRaw, "El segundo número (sustraendo)");
+  if (a0.length > MAX_BITS_ADDSUB || b0.length > MAX_BITS_ADDSUB) {
+    throw new Error(`Usá números de hasta ${MAX_BITS_ADDSUB} bits.`);
+  }
+  const { a, b, len } = padToSameLength(a0, b0);
+
+  const direct = subtractBinaryWithSteps(a, b);
+  const c1 = subtractWithComplement(a, b, "c1");
+  const c2 = subtractWithComplement(a, b, "c2");
+
+  const values = [signedBinaryValue(direct.value), signedBinaryValue(c1.value), signedBinaryValue(c2.value)];
+  const allMatch = values.every(v => v === values[0]);
+
+  const verdictHtml = allMatch
+    ? `<div class="result-banner" style="margin-top:20px">
+         <span class="result-label">✓ Los 3 métodos coinciden</span>
+         <span class="result-value">${direct.value}</span>
+       </div>`
+    : `<div class="result-banner" style="margin-top:20px; border-color:var(--danger); border-left-color:var(--danger)">
+         <span class="result-label" style="color:var(--danger)">⚠ Los resultados no coinciden, revisá los datos</span>
+         <span class="result-value" style="color:var(--danger)">directa: ${direct.value} · C1: ${c1.value} · C2: ${c2.value}</span>
+       </div>`;
+
+  const html = `
+    <p class="hint">A = ${a} &nbsp;·&nbsp; B = ${b} &nbsp;(ambos ajustados a ${len} bits)</p>
+
+    <h3 class="arith-subtitle">1 · Resta directa (con préstamo)</h3>
+    ${direct.html}
+
+    <h3 class="arith-subtitle">2 · Resta convertida en suma con complemento a 1</h3>
+    ${c1.html}
+
+    <h3 class="arith-subtitle">3 · Resta convertida en suma con complemento a 2</h3>
+    ${c2.html}
+
+    ${verdictHtml}
+  `;
+
+  return { value: allMatch ? direct.value : "ver detalle", html };
+}
+
 const COMPLEMENT_MODES = {
   c1: {
     label: "Complemento a 1",
@@ -162,5 +211,11 @@ const COMPLEMENT_MODES = {
     inputs: 2,
     resultLabel: "A − B",
     run: (a, b) => subtractWithComplement(a, b, "c2"),
+  },
+  comparar: {
+    label: "Comparar los 3 métodos",
+    inputs: 2,
+    resultLabel: "Resultado (directa / C1 / C2)",
+    run: (a, b) => compareSubtractionMethods(a, b),
   },
 };

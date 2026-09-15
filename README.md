@@ -1,68 +1,80 @@
-## BitLab
+# BitLab
 
-**BitLab** es un sitio web desarrollado como un espacio de herramientas y utilidades digitales. El proyecto reúne diferentes funciones en una interfaz sencilla, buscando ofrecer una experiencia práctica, rápida y fácil de utilizar.
+Web para resolver conversiones entre bases numéricas y tablas de verdad,
+con el proceso completo mostrado paso a paso. Sitio 100% estático
+(HTML + CSS + JS puro), sin backend ni build: se puede abrir `index.html`
+directamente o subirlo tal cual a cualquier hosting.
 
-## Tecnologías utilizadas
+## Estructura
 
-El proyecto fue desarrollado utilizando tecnologías web fundamentales:
-
-* **HTML5** — Estructura y contenido del sitio.
-* **CSS3** — Diseño, estilos y presentación visual.
-* **JavaScript** — Lógica, interactividad y funcionamiento de las herramientas.
-* **Vercel** — Despliegue y publicación del sitio web.
-* **Git & GitHub** — Control de versiones y almacenamiento del código fuente.
-
-## Estructura del proyecto
-
-```text
-BitLab/
-│
-├── assets/          # Recursos e imágenes del sitio
-├── index.html       # Página principal
-├── style.css        # Estilos y diseño
-├── app.js           # Funcionalidades principales de la aplicación
-├── logic.js         # Lógica del sitio
-├── converters.js    # Funciones relacionadas con conversiones
-├── vercel.json      # Configuración para el despliegue en Vercel
-└── README.md        # Documentación del proyecto
+```
+bitlab/
+├── index.html       → estructura de la página (tabs: conversor, tabla de verdad, acerca)
+├── style.css         → identidad visual (tema oscuro estilo circuito/terminal)
+├── converters.js      → lógica de conversión de bases (fácil de ampliar)
+├── logic.js          → parser y evaluador de expresiones lógicas
+├── app.js            → cablea la interfaz con la lógica
+├── assets/
+│   └── favicon.ico   → ícono de la pestaña
+└── vercel.json        → config mínima para Vercel
 ```
 
-## Características
+## Conversiones incluidas
 
-BitLab está diseñado para integrar diferentes herramientas web en un mismo sitio, utilizando JavaScript para procesar las operaciones y proporcionar resultados de forma dinámica.
+- Binario → Decimal / Decimal → Binario
+- Decimal → Hexadecimal / Hexadecimal → Decimal
+- Decimal → Octal / Octal → Decimal
+- Binario ↔ Hexadecimal, Binario ↔ Octal (usando el decimal como puente, mostrando ambos pasos)
 
-El proyecto busca:
+Las conversiones "hacia decimal" se muestran como expansión posicional
+(dígito × base^posición). Las conversiones "desde decimal" se muestran
+como divisiones sucesivas en escalerita, leyendo los restos de abajo
+hacia arriba — igual a como se resuelve a mano.
 
-* Ofrecer herramientas prácticas desde una sola página.
-* Mantener una interfaz sencilla y fácil de utilizar.
-* Procesar las operaciones directamente en el navegador.
-* Utilizar una estructura organizada y modular.
-* Ser accesible desde cualquier dispositivo con un navegador web.
+## Tabla de verdad
 
-## Publicación
+Acepta expresiones con paréntesis, cualquier cantidad de variables (hasta 6)
+y los operadores NOT, AND, OR, XOR, → (implica) y ↔ (doble implicación),
+en varias notaciones (`!`, `¬`, `~`; `&`, `∧`, `*`; `|`, `∨`, `+`; palabras
+en español/inglés también funcionan: AND, OR, NOT, IMPLICA, SII).
 
-El proyecto está preparado para ser desplegado mediante **Vercel**, utilizando el archivo `vercel.json` para su configuración.
+La tabla muestra una columna por cada subexpresión, en el orden en que se
+resuelve (de adentro hacia afuera), terminando en la expresión completa
+resaltada.
 
-## 💻 Desarrollo
+## Cómo agregar una conversión o herramienta nueva
 
-Este proyecto fue desarrollado utilizando tecnologías del lado del cliente (**Frontend**), sin necesidad de un framework externo.
+- **Nueva base numérica**: agregá una entrada al objeto `CONVERSION_MODES`
+  en `converters.js` y un botón `<button class="chip" data-mode="...">`
+  en `index.html`. El resto (formulario, render) ya es genérico.
+- **Nueva herramienta** (mapas de Karnaugh, IEEE 754, código Gray, etc.):
+  agregá un nuevo `<section class="panel">` en `index.html`, su pestaña
+  en `.tabs`, y un archivo JS propio. `app.js` ya tiene el patrón de
+  cableado de tabs que podés reusar.
 
-La estructura principal se divide en:
+## Desplegar en Vercel
 
-* **HTML** para la estructura.
-* **CSS** para la interfaz y estilos.
-* **JavaScript** para la lógica y funcionalidades.
+### Opción A — Sin usar la terminal (recomendada para la primera vez)
 
-## Estado del proyecto
+1. Subí esta carpeta a un repositorio de GitHub (podés arrastrar los
+   archivos directamente desde github.com → "Add file" → "Upload files").
+2. Entrá a [vercel.com](https://vercel.com) e iniciá sesión con tu cuenta
+   de GitHub.
+3. Click en **Add New… → Project**, elegí el repositorio de BitLab.
+4. Vercel detecta que es un sitio estático (Framework Preset: *Other*).
+   No hace falta tocar nada más: dejá el **Build Command** vacío y el
+   **Output Directory** en `.` (raíz).
+5. Click en **Deploy**. En menos de un minuto te da una URL tipo
+   `bitlab.vercel.app` que ya podés usar en la facultad.
 
-**En desarrollo.**
+### Opción B — Con la CLI de Vercel
 
-BitLab puede continuar incorporando nuevas herramientas, mejoras visuales y funcionalidades conforme avance el desarrollo del proyecto.
+```bash
+npm install -g vercel   # una sola vez
+cd bitlab
+vercel                  # sigue las preguntas (crea el proyecto)
+vercel --prod           # publica la versión definitiva
+```
 
-## Autor
-
-**Carlxoso**
-
-Proyecto desarrollado con fines de aprendizaje y desarrollo de habilidades en tecnologías web.
-
->>>>>>> 9ed1628ca596c478f78b3c47990e47672200c284
+No se necesita ninguna variable de entorno ni configuración adicional:
+`vercel.json` ya está incluido para servir todos los archivos tal cual.

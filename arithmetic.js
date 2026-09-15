@@ -164,7 +164,9 @@ function subtractBinaryWithSteps(aRaw, bRaw) {
     borrows[i] = borrowOut;
   }
 
-  const result = diffBits.join("").replace(/^0+(?=\d)/, "") || "0";
+  // Se mantiene el mismo ancho de bits que los operandos (no se recorta el
+  // cero a la izquierda), tal como corresponde en un ejercicio de N bits fijos.
+  const result = diffBits.join("");
   const width = len;
   const borrowRow = new Array(width).fill("");
   for (let i = 0; i < len; i++) if (borrows[i]) borrowRow[i] = "1";
