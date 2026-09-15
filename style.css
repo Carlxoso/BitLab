@@ -305,3 +305,13 @@ td.false{ color: var(--muted); }
   *{ animation: none !important; transition: none !important; }
   .loading-screen{ display: none !important; }
 }
+
+.github-link {
+    color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.github-link:hover {
+    text-decoration: underline;
+}
