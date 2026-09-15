@@ -8,7 +8,7 @@
 (function () {
   const loader = document.getElementById("loading-screen");
   if (!loader) return;
-  const minDuration = 700; // ms mínimos para que se note la animación
+  const minDuration = 2000; // ms mínimos que se muestra la pantalla de carga
   const start = performance.now();
   function hideLoader() {
     const elapsed = performance.now() - start;

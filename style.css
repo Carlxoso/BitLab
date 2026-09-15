@@ -46,14 +46,15 @@ body{
   position: fixed; inset: 0; z-index: 9999;
   background: var(--bg);
   display:flex; align-items:center; justify-content:center;
-  transition: opacity .4s ease, visibility .4s ease;
+  transition: opacity .6s ease, visibility .6s ease;
 }
 .loading-screen.hide{ opacity: 0; visibility: hidden; pointer-events: none; }
 .loading-content{ display:flex; flex-direction:column; align-items:center; gap: 18px; }
 .loading-logo{ animation: pulse-logo 1.4s ease-in-out infinite; }
 @keyframes pulse-logo{ 0%, 100%{ transform: scale(1); opacity:1; } 50%{ transform: scale(1.1); opacity:.7; } }
-.loading-text{ font-family: var(--display); font-size: 1.05rem; color: var(--muted); letter-spacing: 0.02em; }
-.loading-text span{ color: var(--accent); font-weight: 700; }
+.loading-text{ font-family: var(--display); font-size: 1.15rem; color: var(--text); letter-spacing: 0.01em; display:flex; align-items:baseline; gap: 8px; }
+.loading-x{ color: var(--muted); font-size: 1rem; }
+.loading-name{ font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.7rem; color: var(--accent); line-height: 1; }
 .loading-bar{ width: 160px; height: 4px; background: var(--border); border-radius: 999px; overflow: hidden; }
 .loading-bar-fill{ height:100%; width: 40%; background: var(--accent); border-radius: 999px; animation: loading-slide 1.1s ease-in-out infinite; }
 @keyframes loading-slide{ 0%{ transform: translateX(-120%); } 100%{ transform: translateX(360%); } }
