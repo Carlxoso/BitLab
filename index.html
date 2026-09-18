@@ -45,6 +45,7 @@
     <button class="tab" data-tab="aritmetica" role="tab" aria-selected="false">Aritmética binaria</button>
     <button class="tab" data-tab="complementos" role="tab" aria-selected="false">Complementos</button>
     <button class="tab" data-tab="verdad" role="tab" aria-selected="false">Tabla de verdad</button>
+    <button class="tab" data-tab="postulados" role="tab" aria-selected="false">Postulados booleanos</button>
     <button class="tab" data-tab="acerca" role="tab" aria-selected="false">Acerca</button>
   </nav>
 </header>
@@ -60,14 +61,17 @@
 
     <div class="mode-chips" id="mode-chips">
       <button class="chip active" data-mode="bin2dec">Binario → Decimal</button>
+      <button class="chip" data-mode="bin2hex">Binario → Hexadecimal</button>
+      <button class="chip" data-mode="bin2oct">Binario → Octal</button>
+      <span class="chip-divider" aria-hidden="true"></span>
       <button class="chip" data-mode="dec2bin">Decimal → Binario</button>
       <button class="chip" data-mode="dec2hex">Decimal → Hexadecimal</button>
-      <button class="chip" data-mode="hex2dec">Hexadecimal → Decimal</button>
       <button class="chip" data-mode="dec2oct">Decimal → Octal</button>
-      <button class="chip" data-mode="oct2dec">Octal → Decimal</button>
-      <button class="chip" data-mode="bin2hex">Binario → Hexadecimal</button>
+      <span class="chip-divider" aria-hidden="true"></span>
+      <button class="chip" data-mode="hex2dec">Hexadecimal → Decimal</button>
       <button class="chip" data-mode="hex2bin">Hexadecimal → Binario</button>
-      <button class="chip" data-mode="bin2oct">Binario → Octal</button>
+      <span class="chip-divider" aria-hidden="true"></span>
+      <button class="chip" data-mode="oct2dec">Octal → Decimal</button>
       <button class="chip" data-mode="oct2bin">Octal → Binario</button>
     </div>
 
@@ -190,6 +194,45 @@
     </div>
   </section>
 
+  <!-- ===================== POSTULADOS BOOLEANOS ===================== -->
+  <section id="panel-postulados" class="panel">
+    <div class="panel-head">
+      <h1>Simplificación por postulados básicos</h1>
+      <p>Escribí una función booleana y se va a simplificar aplicando identidad, nulo, idempotencia y complemento, mostrando cada paso hasta llegar a la mínima expresión.</p>
+    </div>
+
+    <div class="postulates-legend">
+      <div class="legend-item"><span class="legend-rule">X · 1 = X</span><span class="legend-name">Identidad</span></div>
+      <div class="legend-item"><span class="legend-rule">X + 0 = X</span><span class="legend-name">Identidad</span></div>
+      <div class="legend-item"><span class="legend-rule">X · 0 = 0</span><span class="legend-name">Nulo</span></div>
+      <div class="legend-item"><span class="legend-rule">X + 1 = 1</span><span class="legend-name">Nulo</span></div>
+      <div class="legend-item"><span class="legend-rule">X · X = X</span><span class="legend-name">Idempotencia</span></div>
+      <div class="legend-item"><span class="legend-rule">X + X = X</span><span class="legend-name">Idempotencia</span></div>
+      <div class="legend-item"><span class="legend-rule">X · X' = 0</span><span class="legend-name">Complemento</span></div>
+      <div class="legend-item"><span class="legend-rule">X + X' = 1</span><span class="legend-name">Complemento</span></div>
+      <div class="legend-item"><span class="legend-rule">(X')' = X</span><span class="legend-name">Doble negación</span></div>
+    </div>
+
+    <form id="post-form" class="conv-form">
+      <label for="post-input">Función booleana (F = …)</label>
+      <div class="input-row">
+        <input id="post-input" type="text" placeholder="Ej: (a·1)·(b·b)·(c·1)+(a·0)·(b·1)" autocomplete="off">
+        <button type="button" class="btn-secondary" id="post-clear">Limpiar</button>
+        <button type="submit" class="btn-primary">Simplificar</button>
+      </div>
+      <p class="hint">Operadores: <code>·</code> o <code>*</code> para AND, <code>+</code> para OR, apóstrofe <code>'</code> (o <code>!</code>) para el complemento. Constantes: <code>0</code> y <code>1</code>. Variables: cualquier letra.</p>
+      <p class="error" id="post-error" aria-live="polite"></p>
+    </form>
+
+    <div id="post-result" class="conv-result" hidden>
+      <div class="result-banner">
+        <span class="result-label">Función simplificada</span>
+        <span class="result-value" id="post-result-value"></span>
+      </div>
+      <div id="post-process" class="conv-process"></div>
+    </div>
+  </section>
+
   <!-- ===================== ACERCA ===================== -->
   <section id="panel-acerca" class="panel">
     <div class="panel-head">
@@ -205,6 +248,7 @@
           <li>Suma, resta y multiplicación binaria con acarreo o préstamo, columna por columna.</li>
           <li>Complemento a 1, complemento a 2, y resta usando ambos métodos.</li>
           <li>Tablas de verdad con cada subexpresión desglosada por columna.</li>
+          <li>Simplificación de funciones booleanas por postulados básicos (identidad, nulo, idempotencia, complemento), con cada reducción explicada.</li>
         </ul>
       </div>
       <div class="about-card">
@@ -221,17 +265,14 @@
 <footer class="footer">
   <span>BitLab</span>
   <span class="dot">·</span>
-  <span>Hecho por 
-    <a href="https://github.com/Carlxoso" target="_blank" class="github-link">
-        Carlxoso
-    </a>
-</span>
+  <span>Hecho por Carlxoso</span>
 </footer>
 
 <script src="converters.js"></script>
 <script src="arithmetic.js"></script>
 <script src="complement.js"></script>
 <script src="logic.js"></script>
+<script src="postulates.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

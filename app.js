@@ -181,6 +181,35 @@ document.getElementById("comp-clear").addEventListener("click", () => {
 
 applyCompMode(currentCompMode);
 
+/* ---------- Postulados booleanos ---------- */
+const postForm = document.getElementById("post-form");
+const postInput = document.getElementById("post-input");
+const postError = document.getElementById("post-error");
+const postResult = document.getElementById("post-result");
+const postResultValue = document.getElementById("post-result-value");
+const postProcess = document.getElementById("post-process");
+
+postForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  postError.textContent = "";
+  try {
+    const { value, html } = simplifyWithPostulates(postInput.value);
+    postResultValue.textContent = value;
+    postProcess.innerHTML = html;
+    postResult.hidden = false;
+  } catch (err) {
+    postResult.hidden = true;
+    postError.textContent = err.message;
+  }
+});
+
+document.getElementById("post-clear").addEventListener("click", () => {
+  postInput.value = "";
+  postError.textContent = "";
+  postResult.hidden = true;
+  postInput.focus();
+});
+
 /* ---------- Tabla de verdad ---------- */
 const ttForm = document.getElementById("tt-form");
 const ttInput = document.getElementById("tt-input");
