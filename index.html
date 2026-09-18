@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BitLab · Conversor de bases y tablas de verdad</title>
 <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 </head>
@@ -59,20 +59,37 @@
       <p>Elegí el tipo de conversión, ingresá el valor y mirá el proceso completo, paso a paso.</p>
     </div>
 
-    <div class="mode-chips" id="mode-chips">
-      <button class="chip active" data-mode="bin2dec">Binario → Decimal</button>
-      <button class="chip" data-mode="bin2hex">Binario → Hexadecimal</button>
-      <button class="chip" data-mode="bin2oct">Binario → Octal</button>
-      <span class="chip-divider" aria-hidden="true"></span>
-      <button class="chip" data-mode="dec2bin">Decimal → Binario</button>
-      <button class="chip" data-mode="dec2hex">Decimal → Hexadecimal</button>
-      <button class="chip" data-mode="dec2oct">Decimal → Octal</button>
-      <span class="chip-divider" aria-hidden="true"></span>
-      <button class="chip" data-mode="hex2dec">Hexadecimal → Decimal</button>
-      <button class="chip" data-mode="hex2bin">Hexadecimal → Binario</button>
-      <span class="chip-divider" aria-hidden="true"></span>
-      <button class="chip" data-mode="oct2dec">Octal → Decimal</button>
-      <button class="chip" data-mode="oct2bin">Octal → Binario</button>
+    <div class="mode-chip-groups" id="mode-chips">
+      <div class="chip-group">
+        <span class="chip-group-label">Binario</span>
+        <div class="chip-row">
+          <button class="chip active" data-mode="bin2dec">Binario → Decimal</button>
+          <button class="chip" data-mode="bin2hex">Binario → Hexadecimal</button>
+          <button class="chip" data-mode="bin2oct">Binario → Octal</button>
+        </div>
+      </div>
+      <div class="chip-group">
+        <span class="chip-group-label">Decimal</span>
+        <div class="chip-row">
+          <button class="chip" data-mode="dec2bin">Decimal → Binario</button>
+          <button class="chip" data-mode="dec2hex">Decimal → Hexadecimal</button>
+          <button class="chip" data-mode="dec2oct">Decimal → Octal</button>
+        </div>
+      </div>
+      <div class="chip-group">
+        <span class="chip-group-label">Hexadecimal</span>
+        <div class="chip-row">
+          <button class="chip" data-mode="hex2dec">Hexadecimal → Decimal</button>
+          <button class="chip" data-mode="hex2bin">Hexadecimal → Binario</button>
+        </div>
+      </div>
+      <div class="chip-group">
+        <span class="chip-group-label">Octal</span>
+        <div class="chip-row">
+          <button class="chip" data-mode="oct2dec">Octal → Decimal</button>
+          <button class="chip" data-mode="oct2bin">Octal → Binario</button>
+        </div>
+      </div>
     </div>
 
     <form id="conv-form" class="conv-form">
@@ -268,11 +285,11 @@
   <span>Hecho por Carlxoso</span>
 </footer>
 
-<script src="converters.js"></script>
-<script src="arithmetic.js"></script>
-<script src="complement.js"></script>
-<script src="logic.js"></script>
-<script src="postulates.js"></script>
-<script src="app.js"></script>
+<script src="converters.js?v=3"></script>
+<script src="arithmetic.js?v=3"></script>
+<script src="complement.js?v=3"></script>
+<script src="logic.js?v=3"></script>
+<script src="postulates.js?v=3"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
