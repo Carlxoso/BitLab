@@ -134,66 +134,69 @@ function simplifyNode(node, steps) {
     const operand = simplifyNode(node.operand, steps);
     if (operand.type === "CONST") {
       const val = operand.value === "0" ? "1" : "0";
-      steps.push(`${exprToStringPost(operand)}' = ${val} &nbsp;<i>(Complemento)</i>`);
+      steps.push(`Aplicamos el complemento a la constante: ${exprToStringPost(operand)}' = ${val} &nbsp;<i>(Complemento)</i>`);
       return { type: "CONST", value: val };
     }
     if (operand.type === "NOT") {
       const inner = exprToStringPost(operand.operand);
-      steps.push(`(${inner}')' = ${inner} &nbsp;<i>(Doble negación)</i>`);
+      steps.push(`Negamos dos veces seguidas: (${inner}')' vuelve a ser ${inner} &nbsp;<i>(Doble negación)</i>`);
       return operand.operand;
     }
     return { type: "NOT", operand };
   }
 
   const opType = node.type; // "AND" | "OR"
-  const symbol = opType === "AND" ? "·" : "+";
+  const verb = opType === "AND" ? "Multiplicamos" : "Sumamos";
+  const noun = opType === "AND" ? "la multiplicación" : "la suma";
+  const symbol = opType === "AND" ? " · " : " + ";
   const absorbing = opType === "AND" ? "0" : "1"; // X·0=0 / X+1=1
   const identity = opType === "AND" ? "1" : "0";  // X·1=X / X+0=X
+  const absorbRule = opType === "AND" ? "Nulo: X·0 = 0" : "Nulo: X+1 = 1";
+  const identityRule = opType === "AND" ? "Identidad: X·1 = X" : "Identidad: X+0 = X";
+  const idempRule = opType === "AND" ? "Idempotencia: X·X = X" : "Idempotencia: X+X = X";
+  const complRule = opType === "AND" ? "Complemento: X·X' = 0" : "Complemento: X+X' = 1";
 
   // 1) aplanar la cadena y simplificar cada factor primero (de adentro hacia afuera)
   const rawFactors = flattenChain(node, opType, []);
-  let factors = rawFactors.map(f => simplifyNode(f, steps));
+  const simplifiedFactors = rawFactors.map(f => simplifyNode(f, steps));
 
-  // 2) si hay una constante absorbente en cualquier posición, colapsa todo (Nulo)
-  if (factors.some(f => f.type === "CONST" && f.value === absorbing)) {
-    if (!(factors.length === 1 && factors[0].type === "CONST")) {
-      steps.push(`${joinFactors(factors, opType)} = ${absorbing} &nbsp;<i>(Nulo: X${symbol}${absorbing} = ${absorbing})</i>`);
+  // 2) recorrer los factores de izquierda a derecha, igual que se haría a mano,
+  //    narrando cada vez que un postulado básico reduce algo.
+  const active = [];
+  for (const f of simplifiedFactors) {
+    const soFar = active.length ? joinFactors(active, opType) : "";
+
+    if (f.type === "CONST" && f.value === absorbing) {
+      steps.push(`${verb} ${soFar ? soFar + symbol : ""}${absorbing} → como aparece un ${absorbing} en ${noun}, ya no hace falta seguir: da directamente ${absorbing} &nbsp;<i>(${absorbRule})</i>`);
+      return { type: "CONST", value: absorbing };
     }
-    return { type: "CONST", value: absorbing };
-  }
 
-  // 3) quitar los elementos neutros (Identidad)
-  const withoutIdentity = factors.filter(f => !(f.type === "CONST" && f.value === identity));
-  if (withoutIdentity.length !== factors.length) {
-    const after = withoutIdentity.length ? joinFactors(withoutIdentity, opType) : identity;
-    steps.push(`${joinFactors(factors, opType)} = ${after} &nbsp;<i>(Identidad)</i>`);
-  }
-  factors = withoutIdentity.length ? withoutIdentity : [{ type: "CONST", value: identity }];
-
-  // 4) quitar duplicados, sin importar dónde estén (Idempotencia)
-  const seen = new Set();
-  const dedup = [];
-  factors.forEach(f => {
-    const key = exprToStringPost(f);
-    if (!seen.has(key)) { seen.add(key); dedup.push(f); }
-  });
-  if (dedup.length !== factors.length) {
-    steps.push(`${joinFactors(factors, opType)} = ${joinFactors(dedup, opType)} &nbsp;<i>(Idempotencia: X${symbol}X = X)</i>`);
-  }
-  factors = dedup;
-
-  // 5) si hay un par complementario en cualquier posición, colapsa todo (Complemento)
-  for (let i = 0; i < factors.length; i++) {
-    for (let j = 0; j < factors.length; j++) {
-      if (i !== j && isComplementPair(factors[i], factors[j])) {
-        steps.push(`${exprToStringPost(factors[i])}${symbol}${exprToStringPost(factors[j])} = ${absorbing} &nbsp;<i>(Complemento)</i>`);
-        return { type: "CONST", value: absorbing };
+    if (f.type === "CONST" && f.value === identity) {
+      if (soFar) {
+        const action = opType === "AND" ? "multiplicar por 1" : "sumar 0";
+        steps.push(`${verb} ${soFar}${symbol}${identity} → ${action} no cambia nada, se saca y queda ${soFar} &nbsp;<i>(${identityRule})</i>`);
       }
+      continue;
     }
+
+    const complementIdx = active.findIndex(a => isComplementPair(a, f));
+    if (complementIdx !== -1) {
+      steps.push(`${verb} ${exprToStringPost(active[complementIdx])}${symbol}${exprToStringPost(f)} → un término y su complemento se cancelan entre sí, da ${absorbing} &nbsp;<i>(${complRule})</i>`);
+      return { type: "CONST", value: absorbing };
+    }
+
+    const dupIdx = active.findIndex(a => exprToStringPost(a) === exprToStringPost(f));
+    if (dupIdx !== -1) {
+      steps.push(`${verb} ${exprToStringPost(f)}${symbol}${exprToStringPost(f)} → ese término ya estaba, repetirlo no cambia nada, se deja una sola vez &nbsp;<i>(${idempRule})</i>`);
+      continue;
+    }
+
+    active.push(f);
   }
 
-  if (factors.length === 1) return factors[0];
-  return rebuildChain(factors, opType);
+  if (active.length === 0) return { type: "CONST", value: identity };
+  if (active.length === 1) return active[0];
+  return rebuildChain(active, opType);
 }
 
 /* ---------- API principal ---------- */

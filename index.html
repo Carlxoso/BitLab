@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BitLab · Conversor de bases y tablas de verdad</title>
 <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 </head>
@@ -238,6 +238,17 @@
         <button type="submit" class="btn-primary">Simplificar</button>
       </div>
       <p class="hint">Operadores: <code>·</code> o <code>*</code> para AND, <code>+</code> para OR, apóstrofe <code>'</code> (o <code>!</code>) para el complemento. Constantes: <code>0</code> y <code>1</code>. Variables: cualquier letra.</p>
+      <div class="bridge-note" style="margin-top:12px">
+        Ejemplo correcto: <code>(a.1)*(b.b)*(c.1)+(a.0)*(b.1)</code>
+        <br><br>
+        <b>Errores comunes que hacen que no lo reconozca:</b>
+        <ul style="margin:8px 0 0; padding-left:18px">
+          <li>Escribir <code>F =</code> o el número del ejercicio delante — poné solo lo que está a la derecha del igual.</li>
+          <li>Que falte cerrar algún paréntesis — tiene que haber la misma cantidad de <code>(</code> que de <code>)</code>.</li>
+          <li>Usar <code>x</code> para multiplicar en vez de <code>.</code>, <code>*</code> o <code>·</code>.</li>
+          <li>Variables de más de una letra pegada a un número raro (usá solo a, b, c, d…).</li>
+        </ul>
+      </div>
       <p class="error" id="post-error" aria-live="polite"></p>
     </form>
 
@@ -285,11 +296,11 @@
   <span>Hecho por Carlxoso</span>
 </footer>
 
-<script src="converters.js?v=3"></script>
-<script src="arithmetic.js?v=3"></script>
-<script src="complement.js?v=3"></script>
-<script src="logic.js?v=3"></script>
-<script src="postulates.js?v=3"></script>
-<script src="app.js?v=3"></script>
+<script src="converters.js?v=4"></script>
+<script src="arithmetic.js?v=4"></script>
+<script src="complement.js?v=4"></script>
+<script src="logic.js?v=4"></script>
+<script src="postulates.js?v=4"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
