@@ -278,6 +278,11 @@ main{ flex:1; max-width: 920px; width:100%; margin: 0 auto; padding: 40px 24px 8
 }
 .legend-rule{ font-family: var(--mono); font-size: 0.92rem; color: var(--accent); font-weight:600; }
 .legend-name{ font-size: 0.72rem; color: var(--muted); }
+.postulate-snapshot{
+  font-family: var(--mono); font-size: 0.92rem; color: var(--accent);
+  background: var(--surface-2); border:1px solid var(--border); border-radius: 6px;
+  padding: 6px 12px; margin-top: 6px; display:inline-block;
+}
 
 /* ---------- TRUTH TABLE ---------- */
 .tt-result{ margin-top: 8px; }

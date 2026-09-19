@@ -127,22 +127,32 @@ function joinFactors(factors, opType) {
   return factors.map(exprToStringPost).join(opType === "AND" ? " · " : " + ");
 }
 
-function simplifyNode(node, steps) {
-  if (node.type === "VAR" || node.type === "CONST") return node;
+/* Reemplaza el contenido de "target" por el de "source", en el mismo
+   objeto (mutación), para poder re-imprimir la ecuación COMPLETA en
+   cualquier momento del proceso a partir de la raíz. */
+function replaceNode(target, source) {
+  delete target.left; delete target.right; delete target.operand;
+  delete target.name; delete target.value;
+  Object.assign(target, source);
+}
+
+function simplifyNode(node, steps, root) {
+  if (node.type === "VAR" || node.type === "CONST") return;
 
   if (node.type === "NOT") {
-    const operand = simplifyNode(node.operand, steps);
+    simplifyNode(node.operand, steps, root);
+    const operand = node.operand;
     if (operand.type === "CONST") {
       const val = operand.value === "0" ? "1" : "0";
-      steps.push(`Aplicamos el complemento a la constante: ${exprToStringPost(operand)}' = ${val} &nbsp;<i>(Complemento)</i>`);
-      return { type: "CONST", value: val };
-    }
-    if (operand.type === "NOT") {
+      const before = exprToStringPost(operand);
+      replaceNode(node, { type: "CONST", value: val });
+      steps.push({ text: `Aplicamos el complemento a la constante: ${before}' = ${val} <i>(Complemento)</i>`, snapshot: exprToStringPost(root) });
+    } else if (operand.type === "NOT") {
       const inner = exprToStringPost(operand.operand);
-      steps.push(`Negamos dos veces seguidas: (${inner}')' vuelve a ser ${inner} &nbsp;<i>(Doble negación)</i>`);
-      return operand.operand;
+      replaceNode(node, operand.operand);
+      steps.push({ text: `Negamos dos veces seguidas: (${inner}')' vuelve a ser ${inner} <i>(Doble negación)</i>`, snapshot: exprToStringPost(root) });
     }
-    return { type: "NOT", operand };
+    return;
   }
 
   const opType = node.type; // "AND" | "OR"
@@ -156,66 +166,89 @@ function simplifyNode(node, steps) {
   const idempRule = opType === "AND" ? "Idempotencia: X·X = X" : "Idempotencia: X+X = X";
   const complRule = opType === "AND" ? "Complemento: X·X' = 0" : "Complemento: X+X' = 1";
 
-  // 1) aplanar la cadena y simplificar cada factor primero (de adentro hacia afuera)
-  const rawFactors = flattenChain(node, opType, []);
-  const simplifiedFactors = rawFactors.map(f => simplifyNode(f, steps));
+  // 1) aplanar la cadena completa y simplificar cada factor primero (de adentro hacia afuera)
+  const allFactors = flattenChain(node, opType, []);
+  allFactors.forEach(f => simplifyNode(f, steps, root));
 
-  // 2) recorrer los factores de izquierda a derecha, igual que se haría a mano,
-  //    narrando cada vez que un postulado básico reduce algo.
+  // 2) recorrer de izquierda a derecha; cada vez que un postulado reduce
+  //    algo, se actualiza "node" (y por lo tanto la raíz completa) y se
+  //    guarda una foto de la ecuación entera en ese momento.
   const active = [];
-  for (const f of simplifiedFactors) {
+  for (let idx = 0; idx < allFactors.length; idx++) {
+    const f = allFactors[idx];
+    const remaining = allFactors.slice(idx + 1);
     const soFar = active.length ? joinFactors(active, opType) : "";
+    let fired = false;
+    let text = null;
+    let collapse = null;
 
     if (f.type === "CONST" && f.value === absorbing) {
-      steps.push(`${verb} ${soFar ? soFar + symbol : ""}${absorbing} → como aparece un ${absorbing} en ${noun}, ya no hace falta seguir: da directamente ${absorbing} &nbsp;<i>(${absorbRule})</i>`);
-      return { type: "CONST", value: absorbing };
-    }
-
-    if (f.type === "CONST" && f.value === identity) {
+      text = `${verb} ${soFar ? soFar + symbol : ""}${absorbing} → como aparece un ${absorbing} en ${noun}, ya no hace falta seguir: da directamente ${absorbing} <i>(${absorbRule})</i>`;
+      collapse = { type: "CONST", value: absorbing };
+      fired = true;
+    } else if (f.type === "CONST" && f.value === identity) {
       if (soFar) {
         const action = opType === "AND" ? "multiplicar por 1" : "sumar 0";
-        steps.push(`${verb} ${soFar}${symbol}${identity} → ${action} no cambia nada, se saca y queda ${soFar} &nbsp;<i>(${identityRule})</i>`);
+        text = `${verb} ${soFar}${symbol}${identity} → ${action} no cambia nada, se saca y queda ${soFar} <i>(${identityRule})</i>`;
+        fired = true;
       }
-      continue;
+    } else {
+      const complementIdx = active.findIndex(a => isComplementPair(a, f));
+      if (complementIdx !== -1) {
+        text = `${verb} ${exprToStringPost(active[complementIdx])}${symbol}${exprToStringPost(f)} → un término y su complemento se cancelan entre sí, da ${absorbing} <i>(${complRule})</i>`;
+        collapse = { type: "CONST", value: absorbing };
+        fired = true;
+      } else {
+        const dupIdx = active.findIndex(a => exprToStringPost(a) === exprToStringPost(f));
+        if (dupIdx !== -1) {
+          text = `${verb} ${exprToStringPost(f)}${symbol}${exprToStringPost(f)} → ese término ya estaba, repetirlo no cambia nada, se deja una sola vez <i>(${idempRule})</i>`;
+          fired = true;
+        } else {
+          active.push(f);
+        }
+      }
     }
 
-    const complementIdx = active.findIndex(a => isComplementPair(a, f));
-    if (complementIdx !== -1) {
-      steps.push(`${verb} ${exprToStringPost(active[complementIdx])}${symbol}${exprToStringPost(f)} → un término y su complemento se cancelan entre sí, da ${absorbing} &nbsp;<i>(${complRule})</i>`);
-      return { type: "CONST", value: absorbing };
+    if (collapse) {
+      replaceNode(node, collapse);
+      steps.push({ text, snapshot: exprToStringPost(root) });
+      return;
     }
-
-    const dupIdx = active.findIndex(a => exprToStringPost(a) === exprToStringPost(f));
-    if (dupIdx !== -1) {
-      steps.push(`${verb} ${exprToStringPost(f)}${symbol}${exprToStringPost(f)} → ese término ya estaba, repetirlo no cambia nada, se deja una sola vez &nbsp;<i>(${idempRule})</i>`);
-      continue;
+    if (fired) {
+      // reconstruye este tramo con lo que ya se aceptó + lo que falta por revisar,
+      // así la ecuación completa refleja exactamente este único cambio.
+      const rest = [...active, ...remaining];
+      if (rest.length === 0) replaceNode(node, { type: "CONST", value: identity });
+      else if (rest.length === 1) replaceNode(node, rest[0]);
+      else replaceNode(node, rebuildChain(rest, opType));
+      steps.push({ text, snapshot: exprToStringPost(root) });
     }
-
-    active.push(f);
   }
 
-  if (active.length === 0) return { type: "CONST", value: identity };
-  if (active.length === 1) return active[0];
-  return rebuildChain(active, opType);
+  if (active.length === 0) replaceNode(node, { type: "CONST", value: identity });
+  else if (active.length === 1) replaceNode(node, active[0]);
+  else replaceNode(node, rebuildChain(active, opType));
 }
 
 /* ---------- API principal ---------- */
 function simplifyWithPostulates(raw) {
   if (!raw.trim()) throw new Error("Escribí una función booleana primero.");
   const tokens = tokenizePost(raw);
-  const tree = parsePost(tokens);
-  const original = exprToStringPost(tree);
+  const root = parsePost(tokens);
+  const original = exprToStringPost(root);
 
   const steps = [];
-  const result = simplifyNode(tree, steps);
-  const finalStr = exprToStringPost(result);
+  simplifyNode(root, steps, root);
+  const finalStr = exprToStringPost(root);
 
   let html = `<div class="arith-block">`;
   html += `<p class="hint">Función original: <b>F = ${original}</b></p>`;
   if (steps.length === 0) {
     html += `<p class="hint" style="margin-top:12px">Ya está en su forma más simple: no se pudo aplicar ningún postulado básico.</p>`;
   } else {
-    html += `<ol class="arith-steps" style="margin-top:14px">${steps.map(s => `<li>${s}</li>`).join("")}</ol>`;
+    html += `<ol class="arith-steps postulate-steps" style="margin-top:14px">`;
+    html += steps.map(s => `<li>${s.text}<div class="postulate-snapshot">F = ${s.snapshot}</div></li>`).join("");
+    html += `</ol>`;
   }
   html += `</div>`;
 
