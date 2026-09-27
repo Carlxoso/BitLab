@@ -51,30 +51,3 @@ resaltada.
   agregá un nuevo `<section class="panel">` en `index.html`, su pestaña
   en `.tabs`, y un archivo JS propio. `app.js` ya tiene el patrón de
   cableado de tabs que podés reusar.
-
-## Desplegar en Vercel
-
-### Opción A — Sin usar la terminal (recomendada para la primera vez)
-
-1. Subí esta carpeta a un repositorio de GitHub (podés arrastrar los
-   archivos directamente desde github.com → "Add file" → "Upload files").
-2. Entrá a [vercel.com](https://vercel.com) e iniciá sesión con tu cuenta
-   de GitHub.
-3. Click en **Add New… → Project**, elegí el repositorio de BitLab.
-4. Vercel detecta que es un sitio estático (Framework Preset: *Other*).
-   No hace falta tocar nada más: dejá el **Build Command** vacío y el
-   **Output Directory** en `.` (raíz).
-5. Click en **Deploy**. En menos de un minuto te da una URL tipo
-   `bitlab.vercel.app` que ya podés usar en la facultad.
-
-### Opción B — Con la CLI de Vercel
-
-```bash
-npm install -g vercel   # una sola vez
-cd bitlab
-vercel                  # sigue las preguntas (crea el proyecto)
-vercel --prod           # publica la versión definitiva
-```
-
-No se necesita ninguna variable de entorno ni configuración adicional:
-`vercel.json` ya está incluido para servir todos los archivos tal cual.
